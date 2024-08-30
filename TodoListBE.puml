@@ -1,0 +1,48 @@
+@startuml "Activity diagram"
+title Router & Controller process
+|User|
+start
+:User choose create task;
+|Client side|
+:Send request to server side;
+|Main Router|
+:Check hostname;
+if (exist?) then (no)
+    |Main Router|
+    :Send error 404 Not Found;
+else (yes)
+    |Main Router|
+    :Check pathname;
+    if (exist?) then (no)
+        :Send error 404 Not Found;
+    else (yes)
+        :Send request to pathname route;
+        |Pathname Router|
+        :Check method;
+        :Check method;
+        if (valid?) then (No)
+            :Send error 405 Method Not Allowed;
+        else (yes)
+            :Send request to controller;
+            |Controller|
+            :Check input;
+        if (valid?) then (yes)
+            :Processing;
+            :Send response 201 Created;
+        else (no)
+            :Send error 400 Bad Request;
+        endif
+    |Pathname Router|
+    :Receive response from controller;
+    endif
+    :Send response to Main Router;
+    |Main Router|
+    :Receive response from Pathname Router;
+    :Send response to Client Side;
+    endif
+endif  
+|Client side|
+    :Receive response from Server side;
+    :Show result;
+stop
+@enduml
